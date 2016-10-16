@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,800,700,300,300italic,600,400italic,600italic,700italic,800italic);
+@import url(fonts.css);
 
 html, body {
   font-family: "Open Sans", sans-serif;
