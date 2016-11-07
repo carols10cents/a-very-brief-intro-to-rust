@@ -13,11 +13,26 @@ made by [@ag_dubs](https://twitter.com/ag_dubs) who is, at best, an advanced beg
 
 <hr>
 
-### This guide is an intro to Rust syntax. It doesn't touch on concepts at all.
+### This guide is an intro to Rust syntax and concepts.
 
-### Concepts are more important, but sometimes you need a little boost to get to a point where the concepts make sense.
+<hr>
 
-### This is that boost.
+## What is Rust?
+
+Rust is a systems programming language that runs blazingly fast, prevents
+segfaults, and guarantees thread safety.
+
+<hr>
+
+## Rust Philosophy
+
+* Favor explicit over implicit
+* Zero-cost abstractions
+* Only pay for what you use
+* Memory safety
+* Small standard library
+* Error handling
+* Stability without stagnation
 
 <hr>
 
@@ -45,6 +60,15 @@ rustc --version
 
 <hr>
 
+## What is Cargo?
+
+* Package manager
+* Build tool
+* Test runner
+* Documentation generator
+
+<hr>
+
 ## setting up a project
 
 There are many ways to setup a project in Rust, but this is the simplest.
@@ -68,7 +92,7 @@ This will create several files and folders for you automatically:
 #### `lib.rs` vs `main.rs`
 
 There are 2 main types of projects you can make in Rust: a library and not
-a library. 
+a library.
 
 If you are writing a <strong>library</strong>, it means you intend for your
 code to be used in someone else's application as a crate or module.
@@ -87,23 +111,72 @@ fn main() {
 
 <hr>
 
-## cargo
+## Files created
 
-Cargo is a tool that helps you develop Rust. It does several things:
-
-- Runs tasks: `cargo build` (compile your app), `cargo test` (test your app), `cargo run` (run your app)
-- Start a project: `cargo new`, `cargo init`
-
-Cargo is also the package manager for Rust. This means that you can
-use Cargo to install and manage bits of other people's code.
-
-- A package in Rust is called a Crate.
-- You can find Crates on http://crates.io
-- You list the Crates you want to use in the `Cargo.toml` file
-- You app keeps track of what crates you are using in the `Cargo.lock` file
+- `Cargo.toml`: metadata about your project and its dependencies
+- `.gitignore`: ignores compiled files built by Rust
+- `src/main.rs`: where your Rust code goes
 
 <hr>
 
+## `Cargo.toml`
+
+```toml
+[package]
+name = "rustbridge"
+version = "0.1.0"
+authors = ["Carol (Nichols || Goulding) <carol.nichols@gmail.com>"]
+
+[dependencies]
+```
+
+<hr>
+
+## `src/main.rs`
+
+```rust
+fn main() {
+    println!("Hello, world!");
+}
+```
+
+<hr>
+
+## Run it!
+
+* `cargo run`
+* Should print "Hello, world!"
+* Now you have more files:
+  * `target` directory: all the built stuff
+  * `Cargo.lock`: locks your dependencies (we don't have any yet)
+* Try printing out something else!
+* Try printing out two things!
+
+<hr>
+
+## API Documentation
+
+https://doc.rust-lang.org/
+or
+`rustup doc`
+
+Click on "Standard Library API Reference"
+or
+`rustup doc --std`
+
+<hr>
+
+## Syntax + Concepts mostly the same as other languages
+
+<hr>
+
+## Comments
+
+* Double slash at the beginning of a line (`//`)
+* Try commenting out one of your lines printing!
+* There are other kinds of comments but this is the most common
+
+<hr>
 
 ## storing values
 
@@ -115,10 +188,36 @@ let name = "ashley";
 let age = 30;
 ```
 
+* Try making more variables and printing them all out in one `println!`
+
 If you want to make a constant, you must specify a type:
 
 ```
 const FAVENUM: u32 = 6;
+```
+
+<hr>
+
+## Experiment
+
+What happens if you run this:
+
+```rust
+let apples = 100;
+apples += 50;
+println!("I have {} apples", apples);
+```
+
+<hr>
+
+## Mutability
+
+Variables are *immutable* by default in Rust.
+
+```rust
+let mut apples = 100;
+apples += 50;
+println!("I have {} apples", apples);
 ```
 
 <hr>
@@ -129,171 +228,220 @@ There are a lot of types, but just to get you started:
 
 - `u32`: unsigned 32-bit integer
 - `i32`: signed 32-bit integer
+- `f64`: floating point number
 - `String` and/or `&str`: more on these below
 - `bool`: a boolean
 
 <hr>
 
+## Type inference
 
-## dealing with strings
+* Every value has a type that the compiler has to know about.
+* Most of the time, the compiler can figure it out.
+* Sometimes it can't, and you'll get an error and need to add an annotation.
+* We could have written `let age: i32 = 30;`
+* A place we **must** specify types is function definitions.
 
-Strings in Rust are a lot more complicated than you might be used to if
-you are coming from another language, in particular, interpreted languages
-like Ruby or JavaScript. Here's some key points:
+???
 
-#### `&str` and `String`
-- "my string" is not a `String`. it's a `str`. the difference between a `String` and a
-  `str` is how they are allocated. Don't worry about that right now.
-- pretty much always use `str` with an `&`, as `&str`.
-- You can turn a `&str` into a `String` by using `to_string()` or `String::from()`. You want
-  to do this because `String` has a ton of awesome convenience methods.
+* Types come after the name
 
 <hr>
 
-
-## concatentation
-
-- add a `&str` to a `String` using `push_str()`
+## Functions
 
 ```rust
-let mut realstring = String::from("hello ");
-let str1 = "world!";
-realstring.push_str(str1);
-```
+fn add_fifty(n: i32) -> i32 {
+    n + 50
+}
 
-- add `&str`s using `format!`
-
-```rust
-let str1 = "hello ";
-let str2 = "world!";
-let message = format!("{}{}", str1, str2);
-```
-
-<hr>
-
-## characters
-
-- a `char` is a different type than a `str` or `String`. `char` always uses single quotes.
-- to get a `String`'s `char`s you can call `chars()`
-- you might find that instead of `chars()` you really want `as_bytes()` but if you aren't sure
-  don't sweat it rn
-
-Example:
-
-```rust
-let name = String::from("ashley");
-let letters = name.chars();
-
-for l in letters {
-  // do something cool with characters
+fn main() {
+    println!("Lots: {}", add_fifty(100));
 }
 ```
 
 <hr>
 
-
-## macros
-
-Macros are an interesting part of Rust. You know something is a macro if its name has
-a `!`. The least technical way to describe the cool thing about macros is that they
-kinda get compiled twice. Don't worry if that doesn't make any sense.
-
-- `println!` is the equivalent of `console.log` or `puts`. It prints printable things
-  to standard output, which is usually just the console.
+## Conditionals: `if`
 
 ```rust
-println!("i get printed on the screen");
-println!("hello {}!", "world");
+fn main() {
+    let age = 13u32;
+    if n < 13 {
+        println!("You may see G or PG movies");
+    } else if n < 17 {
+        println!("You may see G, PG, or PG-13 movies");
+    } else {
+        println!("You are old.");
+        println!("You may see G, PG, PG-13, or R movies");
+    }
+}
 ```
+???
 
-- `format!` is also a macro. We talked about it before as a way to 
-  concatenate `str`s.
-
-```rust
-format!("my dogs are named: {} and {}", "cheeto", "frito");
-```
+* Shorthand for numeric type annotation
+* Age can't be negative, compiler will make sure we don't have negative ages
 
 <hr>
 
+## Conditionals: `match`
 
-## function signatures
+Kinda like a switch. But better.
 
 ```rust
-pub fn say_hello(name: &str) -> String {
-  let message = format!("hello, {}!", name);
-  message
+fn main() {
+    let age = 13u32;
+    match age {
+        0...12 => println!("You may see G or PG movies"),
+        13...16 => println!("You may see G, PG, or PG-13 movies"),
+        _ => {
+            println!("You are old.");
+            println!("You may see G, PG, PG-13, or R movies")
+        },
+    }
 }
 ```
 
-- put `pub` at the beginning if you want the function to be accessible outside the file
-  as in a module or crate
-- the keyword `fn` is how we know it is a function
-- list parameters inside the parens in the style `parameter_name: Type`, separate by commas
-- use the `->` to say what type the function returns
-- return a value from the last line of a function by omitting the semicolon
-- return early in a function using the `return` keyword
-
 <hr>
 
+## Arrays
 
-## `match` syntax
-
-Rust has pattern matching and it's great!
-
-```rust
-match animal {
-  "cat" => "Meow",
-  "dog" => "Woof",
-  _ => "<indecipherable>", // trailing comma!
-}
-```
-
-- `_` is used as a catch-all for anything that doesn't match
-- `match` supports trailing commas, and it's best practice to use them :)
-
-<hr>
-
-
-## the `Option` type
-
-Rust doesn't have `nil`/`null` so if you want to express that something might return
-something or nothing, you need to use the `Option` type.
-
-To write the `Option` type, write the word `Option`, followed by angle brackets with
-a Type inside, e.g. `Option<u32>`.
-
-For example, if a parameter is optional you'd write:
+Kinda like arrays in other languages, but worse.
 
 ```rust
-fn greeting(name: Option<&str>) -> String {
-  let who = match name {
-    Some(n) => n,
-    None => "World",
-  };
-  format!("Hello, {}!", who)
-}
-greeting(Some("ashley"));
-// "Hello, ashley!"
-greeting(None);
-// "Hello, World!"
+let mut color = [255, 0, 255];
+color[0] = 100;
+println!("The color is {:?}", color);
 ```
 
 <hr>
 
-## the `Result` type
+## Quick but Useful Tangent #1: `println!` formatting
 
-`Result` is kind of like `Option` except instead of something or nothing, you
-expect something that is Ok (`Ok()`) or an error (`Err()`).
+* `{}` is called `Display` formatting; only on primitive types by default
+* `{:?}` is called `Debug` formatting; more types have this by default
+* Display is for end users, Debug is for... debugging
+* Rust doesn't want to make assumptions
+* My favorite: `{:#?}` = pretty debug
+* [`fmt` docs](https://doc.rust-lang.org/stable/std/fmt/index.html)
 
-To write the `Result` type, write the word `Result`, follow by angle brackets with
-a Type and an Error Type inside, e.g. `Result<u32, &'static str>`. For example:
+<hr>
+
+## Quick but Useful Tangent #2: `panic!`
+
+* Panic stops your program with a message.
 
 ```rust
-fn parse_name(name: Option<&str>) -> Result<&str, &'static str> {
-  match name {
-    Some(n) => Ok(n),
-    None => Err("You must provide a name."),
-  }
+fn main() {
+    panic!("aaaaa!");
+}
+```
+
+What happens in the last example if we try to access an element out of bounds of the array?
+
+```rust
+let color = [255, 0, 255];
+let index = 9;
+println!("The 10th element is {:?}", color[index]);
+```
+
+<hr>
+
+## Vectors
+
+Most of the time, you probably want a vector rather than array.
+
+```rust
+let mut prices = vec![30, 100, 2];
+prices[0] = 25;
+prices.push(40);
+println!("All the prices are: {:?}", prices);
+```
+<hr>
+
+## Looping (and ranges)
+
+* `for` loops are most common:
+
+```rust
+for i in 0..10 {
+    println!("Number {}", i);
+}
+```
+
+```rust
+let names = vec!["Carol", "Jake", "Marylou", "Bruce"];
+for name in names.iter() {
+    println!("Hi {}!", name);
+}
+```
+
+* `loop` creates an infinite loop
+* `while` loops run while their condition is true
+* `break` exits the current loop
+
+<hr>
+
+## Iterators
+
+```
+for i in (0..10).filter(|x| x % 2 == 0) {
+    println!("i = {}", i);
+}
+
+for i in (0..10).map(|x| x * x ) {
+    println!("i = {}", i);
+}
+
+let sum = (0..10).fold(0, |acc, x| acc + x);
+println!("sum = {}", sum);
+```
+
+* See the [Iterator docs](https://doc.rust-lang.org/stable/std/iter/trait.Iterator.html) for lots more fun stuff.
+* The `|x| x % 2 == 0` in the examples is a closure, they can be used in other situations too.
+
+<hr>
+
+## Enums
+
+* Nice to use with `match`
+
+```rust
+enum TrafficLight {
+    Red,
+    Yellow,
+    Green,
+}
+let light = TrafficLight::Green;
+
+match light {
+    TrafficLight::Red => println!("STOP!"),
+    TrafficLight::Yellow => println!("Slow down!"),
+    TrafficLight::Green => println!("Go go go!"),
+}
+```
+
+<hr>
+
+## Enums
+
+* Better than in other languages: can hold values!
+
+```rust
+enum GameType {
+    SinglePlayer,
+    MultiPlayer(u32),
+}
+
+let game = GameType::MultiPlayer(4);
+
+match game {
+    GameType::SinglePlayer => println!("How about solitaire?"),
+    GameType::MultiPlayer(2) => println!("How about checkers?"),
+    GameType::MultiPlayer(4) => println!("How about bridge?"),
+    GameType::MultiPlayer(num) => {
+        println!("How about {}-player tag?", num)
+    },
 }
 ```
 
@@ -325,11 +473,327 @@ fn it_should_say_hello() {
 
 <hr>
 
+## Syntax + Concepts particular to Rust
+
+<hr>
+
+## Option
+
+**Rust doesn't have `nil`/`null`** so to express that a value might be something or nothing, Rust has the `Option` type.
+
+Option is an enum provided by the standard library:
+
+```rust
+enum Option<T> {
+    Some(T),
+    None
+}
+```
+
+<hr>
+
+## Using Option
+
+```rust
+let mut instructors = vec!["Carol"];
+
+let a = instructors.pop();
+println!("a is {:?}", a);
+
+let b = instructors.pop();
+println!("b is {:?}", b);
+```
+
+<hr>
+
+## Using Option
+
+```rust
+let a = Some("Carol");
+
+let name = a.expect("No name present");
+println!("Name is {} bytes long", name.len());
+```
+
+<hr>
+
+## Using Option
+
+```rust
+let b: Option<&str> = None;
+
+match b {
+    Some(name) => {
+        println!("Other name is {} bytes long", name.len())
+    },
+    None => {
+        println!("No name!")
+    }
+}
+```
+
+<hr>
+
+## Result
+
+* Another enum in the standard library
+* For when something could succeed or fail
+* Rust doesn't have exceptions; using `Result` is how you handle errors.
+
+```rust
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+```
+
+<hr>
+
+## Using Result
+
+```rust
+let numstr = "6";
+let num = numstr.parse::<i32>();
+println!("num = {:?}", num);
+
+let numstr = "florp";
+let num = numstr.parse::<i32>();
+println!("num = {:?}", num);
+```
+
+<hr>
+
+## Using Result
+
+```rust
+let numstr = "6";
+let num = numstr.parse::<i32>();
+let num = num.expect("should have a number");
+
+println!("num + 5 = {}", num + 5);
+```
+
+<hr>
+
+## Using Result
+
+```rust
+let numstr = "florp";
+let num = numstr.parse::<i32>();
+
+let answer = match num {
+    Ok(n) => n + 5,
+    Err(_) => 0,
+};
+println!("Answer is {}", answer);
+```
+
+<hr>
+
+## `try!` macro to propagate errors up
+
+* Can only be used in methods/functions that return `Result`!!!!
+
+```rust
+fn add_five_to_string(s: String) ->
+    Result<i32, std::num::ParseIntError> {
+
+    let ans = try!(s.parse::<i32>()) + 5;
+    Ok(ans)
+}
+```
+
+<hr>
+
+## Strings: WARNING
+
+* Strings in Rust feel complicated
+* We're sorry
+
+???
+
+Working with strings in Rust is more complicated than working with strings in other languages.
+
+Strings are actually complicated in all languages, it's just that most hide the complexity from you and make choices for you. Rust makes you be explicit with the choices.
+
+<hr>
+
+## Two string types
+
+### `String`
+
+* Allocated
+* Growable
+* Can create with either:
+  * `something.to_string()`
+  * `String::from("string slice")`
+
+### `&str`
+
+* Pronounced "string slice"
+* View into string data stored somewhere else
+* Hardcoded strings are `&str`s
+
+<hr>
+
+## A common problem
+
+```rust
+fn fizz(num: u32) -> String {
+    if num % 3 == 0 {
+        "Fizz"
+    } else {
+        num.to_string()
+    }
+}
+```
+
+<hr>
+
+## Slices
+
+* A view into some data
+* Points to the start of the view
+* Knows how long the view is
+
+<hr>
+
+## Slice syntax
+
+* Vector type: `Vec<i32>`
+* Corresponding slice type: `&[i32]`
+
+```rust
+let v = vec![1, 2, 3, 4, 5];
+let piece = &v[3..];
+println!("piece of v = {:?}", piece);
+```
+
+<hr>
+
+## String Slices
+
+```rust
+let s = String::from("Call me Ishmael blah blah...");
+let part = &s[0..4];
+
+println!("part is '{}'", part);
+```
+
+<hr>
+
+## Ownership
+
+* The *owner* of a resource is who is responsible for cleaning it up.
+* When owners go out of scope, Rust automatically calls the cleanup code.
+
+```rust
+fn main() {
+    let v = vec![1, 2, 3];
+    println!("v is valid here! {:?}", v);
+}
+```
+
+<hr>
+
+## Transferring Ownership
+
+* When you pass an argument to a function, ownership is transferred to the function.
+* We say that something is *moved*.
+
+```rust
+fn main() {
+    let v = vec![1, 2, 3];
+    print_vec(v);
+    print_vec(v);
+}
+
+fn print_vec(v: Vec<i32>) {
+    println!("v is {:?}", v);
+}
+```
+
+<hr>
+
+## References
+
+* Let you borrow a resource you don't own
+* A reference is only valid as long as the owner is valid. Rust ensures you aren't using an invalid reference *at compile time*.
+* Slices are a specific type of reference.
+
+```rust
+fn main() {
+    let v = vec![1, 2, 3];
+    print_vec(&v[..]);
+    print_vec(&v[..]);
+}
+
+fn print_vec(v: &[i32]) {
+    println!("v is {:?}", v);
+}
+```
+
+<hr>
+
+## Mutable References
+
+* Like variables, references are immutable by default, but you can make them mutable with `mut`.
+* You may have many immutable references in a scope
+* You may only have one mutable reference and no immutable references in a scope
+
+```rust
+fn main() {
+    let mut v = vec![1, 2, 3];
+    change_vec(&mut v[..]);
+    change_vec(&mut v[..]);
+    println!("v is {:?}", v);
+}
+
+fn change_vec(v: &mut [i32]) {
+    v[0] *= 5;
+}
+```
+
+<hr>
+
+## Not allowed to have mutable and immutable references in the same scope.
+
+```rust
+fn main() {
+    let mut v = vec![1, 2, 3];
+
+    let f = &v[0];
+    v.clear();
+
+    println!("What would f be? {}", f);
+}
+```
+
+<hr>
+
+## Further learning
+### Syntax + Concepts we didn't cover but that are things
+
+* Tests
+* Lifetimes
+* Tuples
+* Structs
+* Methods
+* `if let`
+* FFI
+* Traits
+* Generics
+* Macros
+* Threads
+* Composition over inheritance
+
+<hr>
+
 ## good resources
 
 - The Rust Docs, https://doc.rust-lang.org/
 - The Rust Book, https://doc.rust-lang.org/book/
-- `into_rust` Screencasts, http://intorust.com/
+- into_rust Screencasts, http://intorust.com/
 - The Rust Play Ground, https://play.rust-lang.org/
 - Rust by Example, http://rustbyexample.com/
 - Rust on exercism.io, http://exercism.io/languages/rust
